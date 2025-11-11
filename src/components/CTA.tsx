@@ -3,7 +3,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 const CTA = () => {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section id="cta" className="py-24 px-4 relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-cyan/20 via-purple/20 to-pink/20 rounded-full blur-3xl animate-glow" />

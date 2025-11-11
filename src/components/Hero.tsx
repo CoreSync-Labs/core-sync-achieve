@@ -73,17 +73,17 @@ const Hero = () => {
               <img 
                 src={heroDashboard} 
                 alt="CoreSync Dashboard" 
-                className="w-full h-auto relative z-10"
+                className="w-full h-auto"
               />
             </div>
             
             {/* Floating stat cards */}
-            <div className="absolute -top-6 -left-6 bg-card/80 backdrop-blur-xl rounded-2xl p-4 border border-cyan/20 shadow-lg animate-float">
+            <div className="absolute -top-6 -left-6 bg-card/80 backdrop-blur-xl rounded-2xl p-4 border border-cyan/20 shadow-lg animate-float z-20">
               <p className="text-sm text-muted-foreground">Weekly Goal</p>
               <p className="text-2xl font-bold text-cyan">87%</p>
             </div>
             
-            <div className="absolute -bottom-6 -right-6 bg-card/80 backdrop-blur-xl rounded-2xl p-4 border border-purple/20 shadow-lg animate-float" style={{ animationDelay: "1s" }}>
+            <div className="absolute -bottom-6 -right-6 bg-card/80 backdrop-blur-xl rounded-2xl p-4 border border-purple/20 shadow-lg animate-float z-20" style={{ animationDelay: "1s" }}>
               <p className="text-sm text-muted-foreground">Streak</p>
               <p className="text-2xl font-bold text-purple">12 days</p>
             </div>

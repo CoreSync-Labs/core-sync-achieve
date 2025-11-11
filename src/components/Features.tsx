@@ -44,7 +44,7 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section id="features" className="py-24 px-4 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-navy-light to-background" />
       

@@ -19,13 +19,34 @@ const Navbar = () => {
 
             {/* Navigation links */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-foreground hover:text-cyan transition-colors">
+              <a 
+                href="#features" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-foreground hover:text-cyan transition-colors cursor-pointer"
+              >
                 Features
               </a>
-              <a href="#how-it-works" className="text-foreground hover:text-cyan transition-colors">
+              <a 
+                href="#features" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-foreground hover:text-cyan transition-colors cursor-pointer"
+              >
                 How It Works
               </a>
-              <a href="#pricing" className="text-foreground hover:text-cyan transition-colors">
+              <a 
+                href="#cta" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-foreground hover:text-cyan transition-colors cursor-pointer"
+              >
                 Pricing
               </a>
             </div>
