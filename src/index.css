@@ -92,7 +92,9 @@ All colors MUST be HSL.
 @layer components {
   /* Glass Card */
   .glass-card {
-    @apply backdrop-blur-xl bg-[var(--glass-bg)] border-[var(--glass-border)] shadow-[var(--shadow-card)];
+    @apply backdrop-blur-xl border shadow-[var(--shadow-card)];
+    background: hsl(228 34% 12% / 0.6);
+    border-color: hsl(0 0% 100% / 0.1);
     transition: var(--transition-smooth);
   }
   
@@ -106,7 +108,7 @@ All colors MUST be HSL.
     position: relative;
     background: hsl(228 34% 8%);
     border-radius: var(--radius);
-    overflow: hidden;
+    overflow: visible;
   }
   
   .gradient-border::before {
@@ -120,6 +122,12 @@ All colors MUST be HSL.
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
+    z-index: 0;
+  }
+  
+  .gradient-border > * {
+    position: relative;
+    z-index: 1;
   }
   
   .gradient-border-purple::before {
@@ -132,7 +140,10 @@ All colors MUST be HSL.
   
   /* Stat Card with Glow */
   .stat-card {
-    @apply glass-card p-6 relative overflow-hidden;
+    @apply p-6 relative overflow-hidden backdrop-blur-xl border;
+    background: hsl(228 34% 10% / 0.8);
+    border-color: hsl(0 0% 100% / 0.1);
+    box-shadow: var(--shadow-card);
   }
   
   .stat-card::after {
@@ -145,6 +156,12 @@ All colors MUST be HSL.
     background: radial-gradient(circle, hsl(var(--cyan) / 0.15) 0%, transparent 70%);
     animation: pulse 3s ease-in-out infinite;
     pointer-events: none;
+    z-index: 0;
+  }
+  
+  .stat-card > * {
+    position: relative;
+    z-index: 1;
   }
   
   .stat-card-purple::after {
@@ -161,7 +178,10 @@ All colors MUST be HSL.
   
   /* Quick Action Buttons */
   .quick-action {
-    @apply glass-card p-6 cursor-pointer transition-all relative;
+    @apply p-6 cursor-pointer transition-all relative backdrop-blur-xl border;
+    background: hsl(228 34% 12% / 0.6);
+    border-color: hsl(0 0% 100% / 0.1);
+    box-shadow: var(--shadow-card);
   }
   
   .quick-action:hover {
@@ -181,6 +201,13 @@ All colors MUST be HSL.
     mask-composite: exclude;
     opacity: 0;
     transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .quick-action > * {
+    position: relative;
+    z-index: 1;
   }
   
   .quick-action:hover::before {
