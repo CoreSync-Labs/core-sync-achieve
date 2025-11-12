@@ -61,6 +61,59 @@ export type Database = {
           },
         ]
       }
+      goals: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          current_value: number
+          deadline: string
+          description: string | null
+          id: string
+          target_value: number
+          title: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number
+          deadline: string
+          description?: string | null
+          id?: string
+          target_value: number
+          title: string
+          unit: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number
+          deadline?: string
+          description?: string | null
+          id?: string
+          target_value?: number
+          title?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

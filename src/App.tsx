@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import WorkoutLog from "./pages/WorkoutLog";
+import Goals from "./pages/Goals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,9 +49,7 @@ const App = () => (
               } />
               <Route path="/goals" element={
                 <ProtectedRoute>
-                  <div className="min-h-screen bg-background flex items-center justify-center">
-                    <p className="text-foreground">Goals Tracker - Coming Soon</p>
-                  </div>
+                  <Goals />
                 </ProtectedRoute>
               } />
               <Route path="/achievements" element={
