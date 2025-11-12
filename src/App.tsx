@@ -15,6 +15,7 @@ import Goals from "./pages/Goals";
 import Achievements from "./pages/Achievements";
 import Analytics from "./pages/Analytics";
 import Leaderboard from "./pages/Leaderboard";
+import Recommendations from "./pages/Recommendations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,9 +73,7 @@ const App = () => (
               } />
               <Route path="/recommendations" element={
                 <ProtectedRoute>
-                  <div className="min-h-screen bg-background flex items-center justify-center">
-                    <p className="text-foreground">Recommendations - Coming Soon</p>
-                  </div>
+                  <Recommendations />
                 </ProtectedRoute>
               } />
               
