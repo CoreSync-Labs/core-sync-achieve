@@ -69,6 +69,28 @@ serve(async (req) => {
       .in("workout_id", workoutIds)
       .limit(20);
 
+    // Fetch past recommendation feedback
+    const { data: feedbackData, error: feedbackError } = await supabase
+      .from("recommendation_completions")
+      .select(`
+        rating,
+        feedback_notes,
+        exercises_completed,
+        recommendation_id,
+        saved_recommendations (
+          title,
+          difficulty,
+          exercises
+        )
+      `)
+      .eq("user_id", userId)
+      .order("completed_at", { ascending: false })
+      .limit(10);
+
+    if (feedbackError) {
+      console.error("Feedback fetch error:", feedbackError);
+    }
+
     // Build context for AI
     const workoutHistory = workouts?.map(w => 
       `Date: ${w.workout_date}, Duration: ${w.total_duration}min, Calories: ${w.total_calories}`
@@ -77,6 +99,28 @@ serve(async (req) => {
     const exerciseHistory = exercises?.map(e => 
       `${e.name} (${e.type}): ${e.sets ? `${e.sets}x${e.reps}` : `${e.duration}min`}`
     ).join("\n") || "No exercise details";
+
+    // Analyze feedback to extract preferences
+    let feedbackSummary = "";
+    if (feedbackData && feedbackData.length > 0) {
+      const avgRating = feedbackData.reduce((sum: number, f: any) => sum + (f.rating || 0), 0) / feedbackData.length;
+      const highRatedWorkouts = feedbackData.filter((f: any) => f.rating >= 4);
+      const lowRatedWorkouts = feedbackData.filter((f: any) => f.rating <= 2);
+      
+      feedbackSummary = `\n\nPast Workout Feedback:
+- Average rating: ${avgRating.toFixed(1)}/5 stars
+- ${highRatedWorkouts.length} highly-rated workouts (4-5 stars)
+- ${lowRatedWorkouts.length} low-rated workouts (1-2 stars)
+${highRatedWorkouts.length > 0 ? `\nWorkouts the user enjoyed:
+${highRatedWorkouts.slice(0, 3).map((f: any) => `- "${f.saved_recommendations?.title || 'Unknown'}" (${f.saved_recommendations?.difficulty || 'unknown'} difficulty) - Rated ${f.rating}/5`).join('\n')}` : ''}
+${lowRatedWorkouts.length > 0 ? `\nWorkouts that didn't work well:
+${lowRatedWorkouts.slice(0, 2).map((f: any) => `- "${f.saved_recommendations?.title || 'Unknown'}" ${f.feedback_notes ? `- Feedback: ${f.feedback_notes}` : ''}`).join('\n')}` : ''}
+
+IMPORTANT: Use this feedback to:
+1. Incorporate elements from highly-rated workouts
+2. Avoid patterns from low-rated workouts
+3. Match the user's preferred workout style and difficulty`;
+    }
 
     const userContext = `
 User Profile:
@@ -88,9 +132,10 @@ ${workoutHistory}
 
 Recent Exercises:
 ${exerciseHistory}
+${feedbackSummary}
 `;
 
-    const systemPrompt = `You are an expert fitness coach. Generate 3-5 personalized workout recommendations based on the user's fitness level, goals, and workout history. Each recommendation should be specific, actionable, and progressive.
+    const systemPrompt = `You are an expert fitness coach. Generate 3-5 personalized workout recommendations based on the user's fitness level, goals, workout history, and past feedback. Each recommendation should be specific, actionable, and progressive.
 
 Consider:
 - User's current fitness level
@@ -99,8 +144,9 @@ Consider:
 - Progressive overload principles
 - Variety to prevent plateaus
 - Recovery and balance
+- Past workout ratings and feedback (if available) - prioritize patterns from highly-rated workouts
 
-Provide detailed workout plans that are achievable and motivating.`;
+Provide detailed workout plans that are achievable, motivating, and tailored to the user's preferences based on their feedback history.`;
 
     // Call Lovable AI with tool calling for structured output
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

@@ -180,6 +180,86 @@ export type Database = {
         }
         Relationships: []
       }
+      recommendation_completions: {
+        Row: {
+          completed_at: string
+          created_at: string
+          exercises_completed: Json
+          feedback_notes: string | null
+          id: string
+          rating: number | null
+          recommendation_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          exercises_completed: Json
+          feedback_notes?: string | null
+          id?: string
+          rating?: number | null
+          recommendation_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          exercises_completed?: Json
+          feedback_notes?: string | null
+          id?: string
+          rating?: number | null
+          recommendation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendation_completions_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "saved_recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_recommendations: {
+        Row: {
+          benefits: string[]
+          created_at: string
+          description: string
+          difficulty: string
+          duration: string
+          exercises: Json
+          id: string
+          saved_at: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          benefits: string[]
+          created_at?: string
+          description: string
+          difficulty: string
+          duration: string
+          exercises: Json
+          id?: string
+          saved_at?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          benefits?: string[]
+          created_at?: string
+          description?: string
+          difficulty?: string
+          duration?: string
+          exercises?: Json
+          id?: string
+          saved_at?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
