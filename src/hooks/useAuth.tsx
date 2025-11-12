@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             username,
             fitness_level: fitnessLevel,
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
       
       toast.success('Account created successfully!');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       if (error.message.includes('already registered')) {
         toast.error('This email is already registered. Please sign in instead.');
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       toast.success('Signed in successfully!');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign in');
       throw error;
