@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: Database["public"]["Enums"]["achievement_category"]
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          rarity: Database["public"]["Enums"]["achievement_rarity"]
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          rarity?: Database["public"]["Enums"]["achievement_rarity"]
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          rarity?: Database["public"]["Enums"]["achievement_rarity"]
+          requirement_type?: string
+          requirement_value?: number
+          title?: string
+        }
+        Relationships: []
+      }
       exercises: {
         Row: {
           calories_burned: number
@@ -144,6 +180,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          created_at: string
+          id: string
+          progress: number
+          unlocked: boolean
+          unlocked_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          created_at?: string
+          id?: string
+          progress?: number
+          unlocked?: boolean
+          unlocked_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          created_at?: string
+          id?: string
+          progress?: number
+          unlocked?: boolean
+          unlocked_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workouts: {
         Row: {
           created_at: string
@@ -193,6 +277,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      achievement_category: "workout" | "streak" | "goal" | "milestone"
+      achievement_rarity: "common" | "rare" | "legendary"
       exercise_type: "cardio" | "strength" | "flexibility"
       fitness_level: "beginner" | "intermediate" | "advanced"
     }
@@ -322,6 +408,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      achievement_category: ["workout", "streak", "goal", "milestone"],
+      achievement_rarity: ["common", "rare", "legendary"],
       exercise_type: ["cardio", "strength", "flexibility"],
       fitness_level: ["beginner", "intermediate", "advanced"],
     },
