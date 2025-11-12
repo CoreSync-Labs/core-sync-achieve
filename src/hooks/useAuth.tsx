@@ -10,6 +10,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, username: string, fitnessLevel: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -99,8 +101,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
+
+      if (error) throw error;
+
+      toast.success('Password reset email sent! Check your inbox.');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send reset email');
+      throw error;
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      toast.success('Password updated successfully!');
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update password');
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, resetPassword, updatePassword, loading }}>
       {children}
     </AuthContext.Provider>
   );
