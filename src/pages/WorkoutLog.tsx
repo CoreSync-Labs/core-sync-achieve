@@ -145,7 +145,7 @@ const WorkoutLog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
+    <div className="min-h-screen bg-background pt-24 pb-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center mb-8">
           <Dumbbell className="h-8 w-8 text-cyan mr-3" />
