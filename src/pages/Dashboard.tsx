@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +30,7 @@ interface Goal {
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,11 +45,12 @@ const Dashboard = () => {
     { icon: Zap, label: 'Recommendations', path: '/recommendations' },
   ];
 
+  // Refetch data when user changes or when navigating to dashboard
   useEffect(() => {
     if (user) {
       fetchDashboardData();
     }
-  }, [user]);
+  }, [user, location.pathname]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
