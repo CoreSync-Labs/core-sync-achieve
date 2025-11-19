@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Activity, Dumbbell, Target, Trophy, TrendingUp, Users, Settings } from "lucide-react";
+import { Activity, Dumbbell, Target, Trophy, TrendingUp, Users, Settings, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isDashboardPage = ['/dashboard', '/workout/log', '/goals', '/achievements', '/analytics', '/leaderboard', '/settings'].includes(location.pathname);
+  const isDashboardPage = ['/dashboard', '/workout/log', '/goals', '/achievements', '/analytics', '/leaderboard', '/recommendations', '/settings'].includes(location.pathname);
 
   const dashboardLinks = [
     { label: 'Dashboard', path: '/dashboard', icon: Activity },
@@ -18,6 +18,7 @@ const Navbar = () => {
     { label: 'Achievements', path: '/achievements', icon: Trophy },
     { label: 'Analytics', path: '/analytics', icon: TrendingUp },
     { label: 'Leaderboard', path: '/leaderboard', icon: Users },
+    { label: 'Recommendations', path: '/recommendations', icon: Sparkles },
   ];
 
   return (
@@ -69,26 +70,12 @@ const Navbar = () => {
                 >
                   Features
                 </a>
-                <a 
-                  href="#features" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="text-foreground hover:text-cyan transition-colors cursor-pointer"
-                >
-                  How It Works
-                </a>
-                <a 
-                  href="#cta" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
+                <button 
+                  onClick={() => navigate('/pricing')}
                   className="text-foreground hover:text-cyan transition-colors cursor-pointer"
                 >
                   Pricing
-                </a>
+                </button>
               </div>
             )}
 
