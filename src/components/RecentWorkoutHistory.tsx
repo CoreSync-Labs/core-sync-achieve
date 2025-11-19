@@ -48,7 +48,7 @@ export const RecentWorkoutHistory = ({ userId }: { userId: string }) => {
         `)
         .eq('user_id', userId)
         .order('workout_date', { ascending: false })
-        .limit(5);
+        .limit(10);
 
       if (error) throw error;
       setRecentWorkouts(workouts || []);
@@ -101,7 +101,7 @@ export const RecentWorkoutHistory = ({ userId }: { userId: string }) => {
             <Dumbbell className="h-5 w-5 text-cyan" />
             Recent Workout History
           </CardTitle>
-          <CardDescription>Your last 5 workouts will appear here</CardDescription>
+          <CardDescription>Your last 10 workouts will appear here</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-center py-8">

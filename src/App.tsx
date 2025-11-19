@@ -17,6 +17,7 @@ import Achievements from "./pages/Achievements";
 import Analytics from "./pages/Analytics";
 import Leaderboard from "./pages/Leaderboard";
 import Recommendations from "./pages/Recommendations";
+import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               {/* Public Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/pricing" element={<Pricing />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={
