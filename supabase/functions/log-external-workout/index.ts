@@ -3,8 +3,17 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-api-token',
 };
+
+// Hash token using SHA-256
+async function hashToken(token: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -15,30 +24,77 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
-    // Get the authorization header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Missing authorization header' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    let userId: string | null = null;
+
+    // Check for API token first (X-API-Token header)
+    const apiTokenHeader = req.headers.get('X-API-Token');
+    
+    if (apiTokenHeader && apiTokenHeader.startsWith('cs_')) {
+      // API Token authentication
+      const token = apiTokenHeader.substring(3); // Remove 'cs_' prefix
+      const tokenHash = await hashToken(token);
+      
+      const { data: tokenRecord, error: tokenError } = await supabase
+        .from('api_tokens')
+        .select('user_id, is_active, expires_at')
+        .eq('token_hash', tokenHash)
+        .single();
+
+      if (tokenError || !tokenRecord || !tokenRecord.is_active) {
+        console.error('Invalid API token:', tokenError);
+        return new Response(JSON.stringify({ error: 'Invalid or inactive API token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Check expiration
+      if (tokenRecord.expires_at && new Date(tokenRecord.expires_at) < new Date()) {
+        return new Response(JSON.stringify({ error: 'API token has expired' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      userId = tokenRecord.user_id;
+
+      // Update last_used_at
+      await supabase
+        .from('api_tokens')
+        .update({ last_used_at: new Date().toISOString() })
+        .eq('token_hash', tokenHash);
+
+    } else {
+      // Fall back to JWT authentication
+      const authHeader = req.headers.get('Authorization');
+      if (!authHeader) {
+        return new Response(JSON.stringify({ error: 'Missing authentication' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const supabaseWithAuth = createClient(supabaseUrl, supabaseKey, {
+        auth: { persistSession: false },
+        global: { headers: { Authorization: authHeader } },
       });
+
+      const { data: { user }, error: authError } = await supabaseWithAuth.auth.getUser();
+      if (authError || !user) {
+        console.error('Auth error:', authError);
+        return new Response(JSON.stringify({ error: 'Invalid authorization token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      userId = user.id;
     }
 
-    // Create client with user's token
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        persistSession: false,
-      },
-      global: {
-        headers: { Authorization: authHeader },
-      },
-    });
-
-    // Verify user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.error('Auth error:', authError);
-      return new Response(JSON.stringify({ error: 'Invalid authorization token' }), {
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Authentication failed' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -62,7 +118,7 @@ serve(async (req) => {
     const { data: workout, error: workoutError } = await supabase
       .from('workouts')
       .insert({
-        user_id: user.id,
+        user_id: userId,
         total_duration: workoutDuration,
         total_calories: totalCalories,
         notes: notes || `Auto-logged from external tracker`,

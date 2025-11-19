@@ -13,6 +13,7 @@ import { useTheme } from 'next-themes';
 import Navbar from '@/components/Navbar';
 import { ArrowLeft, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { TokenManagement } from '@/components/TokenManagement';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -169,6 +170,9 @@ const Settings = () => {
               </Button>
             </div>
           </Card>
+
+          {/* API Tokens */}
+          <TokenManagement />
 
           {/* Subscription Info (Placeholder) */}
           <Card className="p-6 border-purple/30">
