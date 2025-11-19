@@ -59,6 +59,54 @@ All colors MUST be HSL.
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 189 100% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 270 100% 64%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 331 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 189 100% 40%;
+
+    /* CoreSync custom colors for light mode */
+    --cyan: 189 100% 40%;
+    --purple: 270 100% 50%;
+    --pink: 331 100% 50%;
+    --navy: 222 47% 11%;
+    --navy-light: 210 40% 96%;
+    --navy-lighter: 214 32% 91%;
+
+    /* Gradients for light mode */
+    --gradient-primary: linear-gradient(135deg, hsl(189 100% 40%) 0%, hsl(270 100% 50%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(270 100% 50%) 0%, hsl(331 100% 50%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 98%) 0%, hsl(210 40% 96%) 100%);
+    
+    /* Shadows for light mode */
+    --shadow-cyan: 0 0 40px hsl(189 100% 40% / 0.2);
+    --shadow-purple: 0 0 40px hsl(270 100% 50% / 0.2);
+    --shadow-card: 0 10px 30px -10px hsl(0 0% 0% / 0.1);
+  }
 }
 
 @layer base {

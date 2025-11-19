@@ -11,9 +11,10 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Navbar from '@/components/Navbar';
-import { ArrowLeft, Moon, Sun, Edit2, Check, X } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Edit2, Check, X, Crown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { TokenManagement } from '@/components/TokenManagement';
+import { SubscriptionModal } from '@/components/SubscriptionModal';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -22,6 +23,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [tempUsername, setTempUsername] = useState('');
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   
   const [profile, setProfile] = useState({
     username: '',
@@ -307,24 +309,77 @@ const Settings = () => {
           {/* API Tokens */}
           <TokenManagement />
 
-          {/* Subscription Info (Placeholder) */}
-          <Card className="p-6 border-purple/30">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Subscription</h2>
+          {/* Subscription Management */}
+          <Card className="p-6 border-purple/30 bg-gradient-to-br from-cyan/5 to-purple/5">
+            <div className="flex items-center gap-2 mb-4">
+              <Crown className="h-6 w-6 text-purple" />
+              <h2 className="text-2xl font-semibold text-foreground">Subscription</h2>
+            </div>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-4 bg-card/50 rounded-lg border border-border">
                 <div>
-                  <Label className="text-base">Current Plan</Label>
-                  <p className="text-sm text-muted-foreground">Free Trial</p>
+                  <Label className="text-base font-semibold">Current Plan</Label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {profile.fitnessLevel === 'beginner' && 'Beginner - $10/month'}
+                    {profile.fitnessLevel === 'intermediate' && 'Fitness Athlete - $30/month'}
+                    {profile.fitnessLevel === 'advanced' && 'Fitness Boss - $50/month'}
+                  </p>
+                  <p className="text-xs text-cyan mt-1">Free trial active</p>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowSubscriptionModal(true)}
+                  className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+                >
                   Upgrade Plan
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Subscription management coming soon
-              </p>
+              
+              <div className="p-4 bg-card/30 rounded-lg border border-border/50">
+                <h3 className="font-medium text-foreground mb-2">What's Included in Your Plan:</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-cyan" />
+                    AI-powered workout recommendations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-cyan" />
+                    Progress tracking and analytics
+                  </li>
+                  {(profile.fitnessLevel === 'intermediate' || profile.fitnessLevel === 'advanced') && (
+                    <>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-cyan" />
+                        Computer vision tracking with camera
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-cyan" />
+                        Advanced analytics dashboard
+                      </li>
+                    </>
+                  )}
+                  {profile.fitnessLevel === 'advanced' && (
+                    <>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-cyan" />
+                        Premium camera + tripod kit
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-cyan" />
+                        Form analysis (Coming Soon)
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
             </div>
           </Card>
+
+          <SubscriptionModal 
+            open={showSubscriptionModal}
+            onOpenChange={setShowSubscriptionModal}
+          />
         </div>
       </main>
     </div>

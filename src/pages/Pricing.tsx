@@ -55,7 +55,7 @@ const Pricing = () => {
         'Enhanced computer vision tracking',
         'Professional setup guide included',
         'Multi-angle workout recording',
-        'Form analysis and corrections',
+        'Form analysis (Coming Soon)',
         'Unlimited workout storage',
         'Priority support',
         '1-week free trial'
