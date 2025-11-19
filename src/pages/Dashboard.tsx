@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [username, setUsername] = useState('');
 
   const quickActions = [
     { icon: Dumbbell, label: 'Log Workout', path: '/workout/log' },
@@ -53,6 +54,17 @@ const Dashboard = () => {
     if (!user) return;
 
     try {
+      // Fetch profile for username
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .single();
+
+      if (!profileError && profileData) {
+        setUsername(profileData.username || '');
+      }
+
       // Fetch workouts
       const { data: workoutData, error: workoutError } = await supabase
         .from('workouts')
@@ -132,7 +144,7 @@ const Dashboard = () => {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
-            Welcome back! 👋
+            Welcome back{username ? ` ${username}` : ''}! 👋
           </h1>
           <p className="text-muted-foreground">
             Ready to crush your fitness goals today?
@@ -328,6 +340,24 @@ const Dashboard = () => {
             </Card>
           )}
         </div>
+
+        {/* Upgrade Plan CTA */}
+        <Card className="mt-8 p-6 bg-gradient-to-r from-cyan/10 to-purple/10 border-cyan/20">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Upgrade Your Fitness Journey
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              Get access to premium features, AI-powered recommendations, and computer vision tracking
+            </p>
+            <Button
+              onClick={() => navigate('/pricing')}
+              className="bg-gradient-to-r from-cyan to-purple hover:opacity-90"
+            >
+              View Membership Plans
+            </Button>
+          </div>
+        </Card>
       </main>
     </div>
   );
